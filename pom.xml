@@ -1,0 +1,159 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>oqube.dojo</groupId>
+  <artifactId>dojo</artifactId>
+  <packaging>pom</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>Dojo pom</name>
+  <url>http://www.oqube.com/projects/dojo/</url>
+ 
+ <inceptionYear>2008</inceptionYear>
+
+ <licenses>
+  <license>
+   <name>GNU LGPL 2.1</name>
+   <url>file://./LICENCE</url>
+   <distribution>repo</distribution>
+  </license>
+ </licenses> 
+
+ <repositories>
+  <repository>
+   <id>scala-tools.org</id>
+   <name>Scala-tools Maven2 Repository</name>
+   <url>http://scala-tools.org/repo-releases</url>
+  </repository>
+  <repository>
+   <id>oqube.com</id>
+   <name>OQube repository</name>
+   <url>http://www.oqube.com/maven2</url>
+   <layout>default</layout>
+   <snapshots>
+    <enabled>true</enabled>
+   </snapshots>
+   <releases>
+    <enabled>true</enabled>
+   </releases>
+  </repository>
+ </repositories>
+ 
+ <pluginRepositories>
+  <pluginRepository>
+   <id>scala-tools.org</id>
+   <name>Scala-tools Maven2 Repository</name>
+   <url>http://scala-tools.org/repo-releases</url>
+  </pluginRepository>
+  
+  <pluginRepository>
+   <id>oqube.com</id>
+   <name>OQube plugin Repository</name>
+   <url>http://www.oqube.com/maven2</url>
+   <layout>default</layout>
+   <snapshots>
+    <enabled>true</enabled>
+   </snapshots>
+   <releases>
+    <enabled>true</enabled>
+   </releases>
+  </pluginRepository>
+ </pluginRepositories>
+ 
+ <distributionManagement>
+  
+  <site>
+   <id>oqube.com</id>
+   <url>
+    scp://www.oqube.com/var/www/projects/dojo
+   </url>
+  </site>
+
+  <repository>
+   <id>oqube.com</id>
+   <name>OQube public repository</name>
+   <url>
+    scp://www.oqube.com/var/www/maven2
+   </url>
+  </repository>
+  
+ </distributionManagement>
+
+ <developers>
+ 
+  <developer>
+   <name>Arnaud Bailly </name>
+   <id>bailly</id>
+    <email>bailly AT lifl POINT fr</email>
+    <organization> LIFL/Norsys</organization>
+    <roles>
+     <role>Developper</role>
+    </roles>
+  </developer>
+ </developers>
+
+ <dependencies>
+  <dependency>
+   <groupId>junit</groupId>
+   <artifactId>junit</artifactId>
+   <version>4.4</version>
+   <scope>test</scope>
+  </dependency>
+  <dependency>
+   <groupId>org.specs</groupId>
+   <artifactId>specs</artifactId>
+   <version>1.2.3</version>
+   <scope>test</scope>
+  </dependency>
+  <dependency>
+   <groupId>scala</groupId>
+   <artifactId>scala-compiler</artifactId>
+   <version>2.6.1</version>
+  </dependency>
+  <dependency>
+   <groupId>scala</groupId>
+   <artifactId>scala-library</artifactId>
+   <version>2.6.1</version>
+  </dependency>  
+
+ </dependencies>
+ 
+  <build>
+
+  <plugins>
+
+   <!-- i18n of project's site decoration -->
+   <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-site-plugin</artifactId>
+    <version>2.0-beta-6</version>
+    <configuration>
+     <outputEncoding>UTF-8</outputEncoding>
+     <inputEncoding>UTF-8</inputEncoding>
+    </configuration>
+    <dependencies>
+     <dependency>
+      <groupId>oqube.muse</groupId>
+      <artifactId>muse-doxia-module</artifactId>
+      <version>1.0-SNAPSHOT</version>
+     </dependency>
+    </dependencies>
+   </plugin>
+
+  </plugins>
+ </build>
+
+ <reporting>
+  <plugins>
+
+   <!-- i18n of project's site decoration -->
+   <plugin>
+    <artifactId>maven-surefire-report-plugin</artifactId>
+   </plugin>
+  </plugins>
+ </reporting>
+
+ <modules>
+  <module>lags</module>
+  <module>pipes</module>
+ </modules>
+</project>

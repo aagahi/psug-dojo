@@ -1,0 +1,42 @@
+#title Lags 
+#author Arnaud Bailly et al.
+
+* Problème 
+
+**Lags: Louez un Avion, Gagnez des Sous !**
+
+Il s'agit d'un problème d'optimisation combinatoire. On a un avion
+loué pour des périodes d'une ou plusieurs heures, et l'on a des offres
+de location associant une période de location et un prix offert. Bien
+sûr, on ne peut pas louer l'avion à deux clients simultanément. On
+cherche donc à maximiser le chiffre d'affaires réalisé en retenant les
+offres les plus intéressantes, c'est-à-dire celles dont la somme des
+prix est maximale et qui sont *compatibles* entre elles (leurs créneaux
+horaires ne se recouvrent pas). 
+
+Plus précisèment, on a: 
+ - en entrée une liste d'offres *triées par ordre croissant* d'heure de
+   départ, et dont les périodes s'inscrivent toutes dans une seule
+   journée (heure de départ et de fin sont des entiers compris entre 0
+   et 23);
+ - en sortie: une sous-liste de la liste d'entrée telle que:
+     - la somme des prix offerts est maximale pour l'ensemble des
+       sous-listes,
+     - toutes les demandes sont compatibles entre elles.
+
+* Voies
+
+ - [[droitdevant.html][Droit devant]]: la voie la plus directe mais pas la
+   plus simple. Deux passages délicats: lors de l'ajout d'une nouvelle
+   demande à une liste de demande, et lors de la sortie finale pour
+   construire la solution la plus intéressante incrémentalement. Un
+   peu *brutale* (ie. on génère trop de solutions);
+ - [[idiot.html][L'idiot]]: la voie la plus simple, utilisant l'algorithme naïf
+   directement issu de la description du problème. Le début reprend
+   *Droit devant*;
+ - [[scalacheck.html][Ceintures et bretelles]]: la suite de la précédente, on utilise
+   l'algorithme naïf comme *oracle* scalacheck pour un algorithme plus
+   sophistiqué (*Droit devant* par le début de la liste);
+ - [[180degre.html][180 degré]]: solution efficace en transformant le problème en
+   parcours de graphe (**TODO**).
+ 

@@ -1,0 +1,1883 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<html>
+<head>
+<style type="text/css"> 
+.src { 
+ font-family: monospace; 
+ font-size: 90%; 
+ white-space:pre;
+ margin-top: 10px;
+ margin-bottom: 10px;
+ background-color: #ddf;
+ padding: 5px;
+ border: thin solid navy;
+ display:none;
+}
+ 
+.button {
+ padding: 2px;
+ color: white;
+ background-color: navy;
+ border: thin solid red;
+ margin: 5px;
+}
+
+#log {
+ padding: 0 0 5 5;
+ margin: 2;
+ border: thin solid gray;
+}
+
+#code {
+  position: absolute;
+ right:10px;
+ width: 55%;
+}
+
+#summary {
+ position:absolute;
+ left:0;
+ width: 40%;
+  margin: 20 20 20 20;
+ height: 100%;
+}
+
+#src_main_scala_oqube_lags_Lags_scala_109 { display: block;}
+#src_test_scala_oqube_lags_LagsTest_scala_108 { display: block;}
+
+</style>
+<script language="JavaScript">
+function hideShow( showId, hideId )
+{
+  var toshow, tohide;
+  if( document.getElementById ) {// this is the way the standards work
+    toShow = document.getElementById( showId );
+    toHide = document.getElementById( hideId );
+  } 
+  else if( document.all ) {// this is the way old msie versions work
+      toShow = document.all[showId];
+      toHide = document.all[hideId];
+  } 
+  toShow.style.display = 'block';
+  toHide.style.display = 'none';
+}
+</script>
+</head>
+<body>
+<h1>Dojo du 20 février 2008</h1>
+<div id="summary">
+<h3>Rétrospective</h3>
+
+<p class="first">Cette séance du dojo était consacrée à la suite du problème <strong>Lags</strong> (voir
+<a href="index.html">index</a>), l'objectif étant de produire une solution en suivant la voie
+la plus simple algorithmiquement parlant. L'algorithme <em>naïf</em>, donc, se
+décompose naturellement en les étapes suivantes:</p>
+
+<ol>
+<li>obtenir toutes les sous-listes de la liste des demandes;</li>
+<li>filtrer celles qui ne sont pas <em>acceptables</em> (ie. qui contiennent
+des demandes incompatibles);</li>
+<li>calculer pour chacune le chiffre d'affaires;</li>
+<li>prendre le maximum de ceux-ci.</li>
+</ol>
+
+<p>L'étape de base qui est l'identification des demandes compatibles deux
+à deux avait déjà été traitée au dojo précédent, produisant un
+opérateur <code>&gt;&gt;&gt;</code> de <em>compatibilité</em> entre demande. La question se pose de
+la pertinence du choix d'opérateurs, potentiellement cryptiques, pour
+définir des fonctionnalités:</p>
+
+<ul>
+<li>est-il préférable d'utiliser <code>&gt;&gt;&gt;</code> plutôt que <code>estCompatible</code> ?</li>
+<li>si oui, dans quels cas ? Dès que possible ? quand le sens des
+opérateurs est <em>intuitivement</em> évident ? Quand il n'y a pas
+possibilité de confusion ou d'ambiguïté dans leur interprétation ?</li>
+</ul>
+
+<p>Le calcul des sous-listes d'une liste fait émerger un <em>pattern</em> pour
+l'introduction de la relation de <em>récurrence</em>:</p>
+
+<ul>
+<li>le test pour la liste vide constitue le cas de base, introduit la
+méthode cible, produit un fake immédiat;</li>
+<li>le test pour la liste non vide introduit le <em>filtrage de motif</em>,
+séparant les listes non vides des listes à un élément;</li>
+<li>le test pour une liste de deux éléments permet de faire apparaître
+la récursion par remaniements successifs :
+
+<ul>
+<li>on écrit la réponse immédiate,</li>
+<li>on identifie les répétitions et motifs qui,</li>
+<li>permettent de faire <em>émerger</em> l'appel récursif;</li>
+</ul></li>
+<li>le test à plus de deux éléments permet enfin de compléter les
+motifs (avertissement du compilateur) et de boucler le code.</li>
+</ul>
+
+<p>Ce pattern n'apparaît pas aussi évident dans le cas de
+<em>l'identification des sous-listes acceptables</em>. Le passage de 0 à 1 ne
+fonctionne pas selon le cycle <em>Red-Green-Refactor</em> car:</p>
+
+<ol>
+<li>la réponse la plus simple pour 0 est <code>true</code>;</li>
+<li>c'est aussi la réponse la plus simple pour 1.
+Dans le dojo, on passe de 0 à 2 avant de revenir à 1 ce qui (me)
+semble peu <em>naturel</em>. Le passage à la récursion est plus simple -
+nécessite moins de remaniement - que pour les sous listes, on compose
+simplement l'appel récursif avec le résultat de la liste.</li>
+</ol>
+
+<p>Peut-être l'enchaînement serait-il plus élégant en construisant
+d'abord une opération binaire entre une demande et une liste de
+demandes.</p>
+
+<p>Le reste de l'algorithme découle immédiatement des ces briques de
+base et de l'application de <code>foldLeft</code> pour calculer les chiffres
+d'affaires et le maximum. Quelques remarques:</p>
+
+<ol>
+<li>il apparaît préférable de faire ressortir la fonction <code>turnover</code>
+calculant le chiffre d'affaires d'une liste de demandes, ce qui
+fait émerger immédiatement la structure de l'algorithme naïf,
+traduite quasi mot-à-mot de sa description française. L'inclusion
+d'une fonction anonyme complique inutilement le code;</li>
+<li>le max doit être redéfini. Il l'est ici sans tests, considérant
+que cela devrait être une fonction de bibliothèque (à vérifier
+dans <a href="http://scala-lang.org">http://scala-lang.org</a>);</li>
+<li>il est facile avec des langages fonctionnels possédant une syntaxe
+riche, tels que Scala, de tomber dans le <em>piège</em> de l'opacité du
+code, abusant des symboles tels que <code>_</code> ou de fonctions en ligne.</li>
+</ol>
+
+
+</div>
+
+<div id="code">
+<div id="src_main_scala_oqube_lags_Lags_scala_127" class="src">
+<h1>File src/main/scala/oqube/lags/Lags.scala (r127) </h1><span class="button" onclick="javascript:hideShow('src_main_scala_oqube_lags_Lags_scala_109','src_main_scala_oqube_lags_Lags_scala_127');">next</span> 
+/**
+ *  Copyright (C) 2008 - OQube / Arnaud Bailly
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Created on Thu Jan 24 2008
+ */
+package oqube.lags
+
+object request {
+
+  /**
+   * Implicit conversion for easy comparison of requests.
+   */
+  implicit def requestAsInt(r : Request) : Double = r.start
+  
+  def sublists(list : List[Request]) : List[List[Request]] = list match {
+    case Nil      =&gt; List(Nil)
+    case x :: xs  =&gt; {
+      val sub = sublists(xs)
+      sub.map(x :: _) ::: sub
+    }
+  }
+
+  def isAcceptable(list : List[Request]) : Boolean = list match {
+    case Nil     =&gt; true
+    case x :: xs =&gt; xs.foldLeft(true)((a,r) =&gt; a && (x &gt;&gt;&gt; r)) && isAcceptable(xs)
+  }
+
+  def max(a :Int, b: Int) : Int = if(a &gt; b) a else b
+
+  def turnover(list : List[Request]) : Int = list.foldLeft(0)(_ + _.price)
+
+  def bestTurnover(list : List[Request]) : Int = 
+    sublists(list)
+      .filter(isAcceptable _)
+      .map(turnover)
+      .foldLeft(0)(max)
+  
+  /**
+   * 
+   * @author abailly@oqube.com
+   * @version $Rev$
+   */
+   case class Request(start : Int, end : Int, price :Int) {
+     def &gt;&gt;&gt;(r : Request) = r.start &gt;= end
+   }
+
+}
+
+</div>
+<div id="src_main_scala_oqube_lags_Lags_scala_126" class="src">
+<h1>File src/main/scala/oqube/lags/Lags.scala (r126) </h1><span class="button" onclick="javascript:hideShow('src_main_scala_oqube_lags_Lags_scala_127','src_main_scala_oqube_lags_Lags_scala_126');">next</span> 
+/**
+ *  Copyright (C) 2008 - OQube / Arnaud Bailly
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Created on Thu Jan 24 2008
+ */
+package oqube.lags
+
+object request {
+
+  /**
+   * Implicit conversion for easy comparison of requests.
+   */
+  implicit def requestAsInt(r : Request) : Double = r.start
+  
+  def sublists(list : List[Request]) : List[List[Request]] = list match {
+    case Nil      =&gt; List(Nil)
+    case x :: xs  =&gt; {
+      val sub = sublists(xs)
+      sub.map(x :: _) ::: sub
+    }
+  }
+
+  def isAcceptable(list : List[Request]) : Boolean = list match {
+    case Nil     =&gt; true
+    case x :: xs =&gt; xs.foldLeft(true)((a,r) =&gt; a && (x &gt;&gt;&gt; r)) && isAcceptable(xs)
+  }
+
+  def max(a :Int, b: Int) : Int = if(a &gt; b) a else b
+
+  def bestTurnover(list : List[Request]) : Int = 
+    sublists(list)
+      .filter(isAcceptable _)
+      .map(_.foldLeft(0)(_ + _.price))
+      .foldLeft(0)(max)
+  
+  /**
+   * 
+   * @author abailly@oqube.com
+   * @version $Rev$
+   */
+   case class Request(start : Int, end : Int, price :Int) {
+     def &gt;&gt;&gt;(r : Request) = r.start &gt;= end
+   }
+
+}
+
+</div>
+<div id="src_main_scala_oqube_lags_Lags_scala_125" class="src">
+<h1>File src/main/scala/oqube/lags/Lags.scala (r125) </h1><span class="button" onclick="javascript:hideShow('src_main_scala_oqube_lags_Lags_scala_126','src_main_scala_oqube_lags_Lags_scala_125');">next</span> 
+/**
+ *  Copyright (C) 2008 - OQube / Arnaud Bailly
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Created on Thu Jan 24 2008
+ */
+package oqube.lags
+
+object request {
+
+  /**
+   * Implicit conversion for easy comparison of requests.
+   */
+  implicit def requestAsInt(r : Request) : Double = r.start
+  
+  def sublists(list : List[Request]) : List[List[Request]] = list match {
+    case Nil      =&gt; List(Nil)
+    case x :: xs  =&gt; {
+      val sub = sublists(xs)
+      sub.map(x :: _) ::: sub
+    }
+  }
+
+  def isAcceptable(list : List[Request]) : Boolean = list match {
+    case Nil     =&gt; true
+    case x :: xs =&gt; xs.foldLeft(true)((a,r) =&gt; a && (x &gt;&gt;&gt; r)) && isAcceptable(xs)
+  }
+
+  def bestTurnover(list : List[Request]) : Int = list match {
+    case Nil      =&gt; 0
+    case x :: xs  =&gt; x.price + bestTurnover(xs)
+  }
+
+  /**
+   * 
+   * @author abailly@oqube.com
+   * @version $Rev$
+   */
+   case class Request(start : Int, end : Int, price :Int) {
+     def &gt;&gt;&gt;(r : Request) = r.start &gt;= end
+   }
+
+}
+
+</div>
+<div id="src_main_scala_oqube_lags_Lags_scala_123" class="src">
+<h1>File src/main/scala/oqube/lags/Lags.scala (r123) </h1><span class="button" onclick="javascript:hideShow('src_main_scala_oqube_lags_Lags_scala_125','src_main_scala_oqube_lags_Lags_scala_123');">next</span> 
+/**
+ *  Copyright (C) 2008 - OQube / Arnaud Bailly
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Created on Thu Jan 24 2008
+ */
+package oqube.lags
+
+object request {
+
+  /**
+   * Implicit conversion for easy comparison of requests.
+   */
+  implicit def requestAsInt(r : Request) : Double = r.start
+  
+  def sublists(list : List[Request]) : List[List[Request]] = list match {
+    case Nil      =&gt; List(Nil)
+    case x :: xs  =&gt; {
+      val sub = sublists(xs)
+      sub.map(x :: _) ::: sub
+    }
+  }
+
+  def isAcceptable(list : List[Request]) : Boolean = list match {
+    case Nil     =&gt; true
+    case x :: xs =&gt; xs.foldLeft(true)((a,r) =&gt; a && (x &gt;&gt;&gt; r)) && isAcceptable(xs)
+  }
+
+  def bestTurnover(list : List[Request]) : Int = 0
+
+  /**
+   * 
+   * @author abailly@oqube.com
+   * @version $Rev$
+   */
+   case class Request(start : Int, end : Int, price :Int) {
+     def &gt;&gt;&gt;(r : Request) = r.start &gt;= end
+   }
+
+}
+
+</div>
+<div id="src_main_scala_oqube_lags_Lags_scala_122" class="src">
+<h1>File src/main/scala/oqube/lags/Lags.scala (r122) </h1><span class="button" onclick="javascript:hideShow('src_main_scala_oqube_lags_Lags_scala_123','src_main_scala_oqube_lags_Lags_scala_122');">next</span> 
+/**
+ *  Copyright (C) 2008 - OQube / Arnaud Bailly
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Created on Thu Jan 24 2008
+ */
+package oqube.lags
+
+object request {
+
+  /**
+   * Implicit conversion for easy comparison of requests.
+   */
+  implicit def requestAsInt(r : Request) : Double = r.start
+  
+  def sublists(list : List[Request]) : List[List[Request]] = list match {
+    case Nil      =&gt; List(Nil)
+    case x :: xs  =&gt; {
+      val sub = sublists(xs)
+      sub.map(x :: _) ::: sub
+    }
+  }
+
+  def isAcceptable(list : List[Request]) : Boolean = list match {
+    case Nil     =&gt; true
+    case x :: xs =&gt; xs.foldLeft(true)((a,r) =&gt; a && (x &gt;&gt;&gt; r)) 
+		    && isAcceptable(xs)
+  }
+
+  /**
+   * 
+   * @author abailly@oqube.com
+   * @version $Rev$
+   */
+   case class Request(start : Int, end : Int, price :Int) {
+     def &gt;&gt;&gt;(r : Request) = r.start &gt;= end
+   }
+
+}
+
+</div>
+<div id="src_main_scala_oqube_lags_Lags_scala_120" class="src">
+<h1>File src/main/scala/oqube/lags/Lags.scala (r120) </h1><span class="button" onclick="javascript:hideShow('src_main_scala_oqube_lags_Lags_scala_122','src_main_scala_oqube_lags_Lags_scala_120');">next</span> 
+/**
+ *  Copyright (C) 2008 - OQube / Arnaud Bailly
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Created on Thu Jan 24 2008
+ */
+package oqube.lags
+
+object request {
+
+  /**
+   * Implicit conversion for easy comparison of requests.
+   */
+  implicit def requestAsInt(r : Request) : Double = r.start
+  
+  def sublists(list : List[Request]) : List[List[Request]] = list match {
+    case Nil      =&gt; List(Nil)
+    case x :: xs  =&gt; {
+      val sub = sublists(xs)
+      sub.map(x :: _) ::: sub
+    }
+  }
+
+  def isAcceptable(list : List[Request]) : Boolean = list match {
+    case Nil     =&gt; true
+    case x :: xs =&gt; xs.foldLeft(true)((a,r) =&gt; a && (x &gt;&gt;&gt; r))
+  }
+
+  /**
+   * 
+   * @author abailly@oqube.com
+   * @version $Rev$
+   */
+   case class Request(start : Int, end : Int, price :Int) {
+     def &gt;&gt;&gt;(r : Request) = r.start &gt;= end
+   }
+
+}
+
+</div>
+<div id="src_main_scala_oqube_lags_Lags_scala_117" class="src">
+<h1>File src/main/scala/oqube/lags/Lags.scala (r117) </h1><span class="button" onclick="javascript:hideShow('src_main_scala_oqube_lags_Lags_scala_120','src_main_scala_oqube_lags_Lags_scala_117');">next</span> 
+/**
+ *  Copyright (C) 2008 - OQube / Arnaud Bailly
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Created on Thu Jan 24 2008
+ */
+package oqube.lags
+
+object request {
+
+  /**
+   * Implicit conversion for easy comparison of requests.
+   */
+  implicit def requestAsInt(r : Request) : Double = r.start
+  
+  def sublists(list : List[Request]) : List[List[Request]] = list match {
+    case Nil      =&gt; List(Nil)
+    case x :: xs  =&gt; {
+      val sub = sublists(xs)
+      sub.map(x :: _) ::: sub
+    }
+  }
+
+  def isAcceptable(list : List[Request]) : Boolean = list match {
+    case Nil  =&gt; true
+    case _    =&gt; false
+  }
+
+  /**
+   * 
+   * @author abailly@oqube.com
+   * @version $Rev$
+   */
+   case class Request(start : Int, end : Int, price :Int) {
+     def &gt;&gt;&gt;(r : Request) = r.start &gt;= end
+   }
+
+}
+
+</div>
+<div id="src_main_scala_oqube_lags_Lags_scala_115" class="src">
+<h1>File src/main/scala/oqube/lags/Lags.scala (r115) </h1><span class="button" onclick="javascript:hideShow('src_main_scala_oqube_lags_Lags_scala_117','src_main_scala_oqube_lags_Lags_scala_115');">next</span> 
+/**
+ *  Copyright (C) 2008 - OQube / Arnaud Bailly
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Created on Thu Jan 24 2008
+ */
+package oqube.lags
+
+object request {
+
+  /**
+   * Implicit conversion for easy comparison of requests.
+   */
+  implicit def requestAsInt(r : Request) : Double = r.start
+  
+  def sublists(list : List[Request]) : List[List[Request]] = list match {
+    case Nil      =&gt; List(Nil)
+    case x :: xs  =&gt; {
+      val sub = sublists(xs)
+      sub.map(x :: _) ::: sub
+    }
+  }
+
+  def isAcceptable(list : List[Request]) : Boolean = true
+
+  /**
+   * 
+   * @author abailly@oqube.com
+   * @version $Rev$
+   */
+   case class Request(start : Int, end : Int, price :Int) {
+     def &gt;&gt;&gt;(r : Request) = r.start &gt;= end
+   }
+
+}
+
+</div>
+<div id="src_main_scala_oqube_lags_Lags_scala_114" class="src">
+<h1>File src/main/scala/oqube/lags/Lags.scala (r114) </h1><span class="button" onclick="javascript:hideShow('src_main_scala_oqube_lags_Lags_scala_115','src_main_scala_oqube_lags_Lags_scala_114');">next</span> 
+/**
+ *  Copyright (C) 2008 - OQube / Arnaud Bailly
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Created on Thu Jan 24 2008
+ */
+package oqube.lags
+
+/**
+* Companion object.
+*/
+object request {
+
+  /**
+   * Implicit conversion for easy comparison of requests.
+   */
+  implicit def requestAsInt(r : Request) : Double = r.start
+  
+  def sublists(list : List[Request]) : List[List[Request]] = list match {
+    case Nil      =&gt; List(Nil)
+    case x :: xs  =&gt; {
+      val sub = sublists(xs)
+      sub.map(x :: _) ::: sub
+    }
+  }
+
+  /**
+   * 
+   * @author abailly@oqube.com
+   * @version $Rev$
+   */
+   case class Request(start : Int, end : Int, price :Int) {
+     def &gt;&gt;&gt;(r : Request) = r.start &gt;= end
+   }
+
+}
+
+</div>
+<div id="src_main_scala_oqube_lags_Lags_scala_112" class="src">
+<h1>File src/main/scala/oqube/lags/Lags.scala (r112) </h1><span class="button" onclick="javascript:hideShow('src_main_scala_oqube_lags_Lags_scala_114','src_main_scala_oqube_lags_Lags_scala_112');">next</span> 
+/**
+ *  Copyright (C) 2008 - OQube / Arnaud Bailly
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Created on Thu Jan 24 2008
+ */
+package oqube.lags
+
+/**
+* Companion object.
+*/
+object request {
+
+  /**
+   * Implicit conversion for easy comparison of requests.
+   */
+  implicit def requestAsInt(r : Request) : Double = r.start
+  
+  def sublists(list : List[Request]) : List[List[Request]] = list match {
+    case Nil           =&gt; List(Nil)
+    case x :: Nil      =&gt; List(List(x), Nil)
+    case x :: y :: Nil =&gt; {
+      val sub = sublists(List(y))
+      sub.map(x :: _) ::: sub
+    }
+  }
+
+  /**
+   * 
+   * @author abailly@oqube.com
+   * @version $Rev$
+   */
+   case class Request(start : Int, end : Int, price :Int) {
+     def &gt;&gt;&gt;(r : Request) = r.start &gt;= end
+   }
+
+}
+
+</div>
+<div id="src_main_scala_oqube_lags_Lags_scala_111" class="src">
+<h1>File src/main/scala/oqube/lags/Lags.scala (r111) </h1><span class="button" onclick="javascript:hideShow('src_main_scala_oqube_lags_Lags_scala_112','src_main_scala_oqube_lags_Lags_scala_111');">next</span> 
+/**
+ *  Copyright (C) 2008 - OQube / Arnaud Bailly
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Created on Thu Jan 24 2008
+ */
+package oqube.lags
+
+/**
+* Companion object.
+*/
+object request {
+
+  /**
+   * Implicit conversion for easy comparison of requests.
+   */
+  implicit def requestAsInt(r : Request) : Double = r.start
+  
+  def sublists(list : List[Request]) : List[List[Request]] = list match {
+    case Nil           =&gt; List(Nil)
+    case x :: Nil      =&gt; List(List(x), Nil)
+    case x :: y :: Nil =&gt; List(List(x,y), List(x), 
+			       List(y), Nil)
+  }
+
+  /**
+   * 
+   * @author abailly@oqube.com
+   * @version $Rev$
+   */
+   case class Request(start : Int, end : Int, price :Int) {
+     def &gt;&gt;&gt;(r : Request) = r.start &gt;= end
+   }
+
+}
+
+</div>
+<div id="src_main_scala_oqube_lags_Lags_scala_109" class="src">
+<h1>File src/main/scala/oqube/lags/Lags.scala (r109) </h1><span class="button" onclick="javascript:hideShow('src_main_scala_oqube_lags_Lags_scala_111','src_main_scala_oqube_lags_Lags_scala_109');">next</span> 
+/**
+ *  Copyright (C) 2008 - OQube / Arnaud Bailly
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Created on Thu Jan 24 2008
+ */
+package oqube.lags
+
+/**
+* Companion object.
+*/
+object request {
+
+  /**
+   * Implicit conversion for easy comparison of requests.
+   */
+  implicit def requestAsInt(r : Request) : Double = r.start
+  
+  def sublists(list : List[Request]) : List[List[Request]] = List(Nil)
+
+  /**
+   * 
+   * @author abailly@oqube.com
+   * @version $Rev$
+   */
+   case class Request(start : Int, end : Int, price :Int) {
+     def &gt;&gt;&gt;(r : Request) = r.start &gt;= end
+   }
+
+}
+
+</div>
+<div id="src_test_scala_oqube_lags_LagsTest_scala_124" class="src">
+<h1>File src/test/scala/oqube/lags/LagsTest.scala (r124) </h1><span class="button" onclick="javascript:hideShow('src_test_scala_oqube_lags_LagsTest_scala_108','src_test_scala_oqube_lags_LagsTest_scala_124');">next</span> 
+/**
+ *  Copyright (C) 2008 - OQube / Arnaud Bailly
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Created on Thu Jan 24 2008
+ */
+package oqube.lags
+
+/*
+ * needed imports for specs
+ */
+import junit.framework._
+import org.specs.runner.JUnit3
+import org.specs._
+import request._
+
+
+/**
+ * Specification of LAGS problem.
+ */
+object LagsSpecification extends Specification {
+  
+  "a reservation request" should {
+
+    "be defined by its start, end hour and price" in {
+      val d = Request(1,4,50)
+      d.start must be(1)
+      d.end must be(4)
+      d.price must be(50)
+    }
+
+    "be comparable by start date to some other request" in {
+      val d = Request(1, 4 ,50)
+      val d2 = Request(3, 4 ,50)
+      d2 must beStrictlyGreaterThan(d)
+    }
+
+    "be compatible with other request if times do not overlap" in {
+      val d = Request(1, 4 ,50)
+      val d3 = Request(4, 5 ,50)
+      d &gt;&gt;&gt; d3 must be(true)
+    }
+
+    "be incompatible with some other request if times do overlap" in {
+      val d = Request(1, 4 ,50)
+      val d2 = Request(3, 4 ,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+
+    "be incompatible with some other request if it includes it" in {
+      val d = Request(1, 4 ,50)
+      val d2 = Request(3, 2 ,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+
+    "be incompatible with some other request if it is included in it" in {
+      val d = Request(3, 4 ,50)
+      val d2 = Request(1, 12,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+
+    "be incompatible with some other request if it is overlapped" in {
+      val d = Request(3, 5 ,50)
+      val d2 = Request(1, 4,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+  }
+
+  "the sublists of a list" should {
+    
+    val norequest : List[Request] = Nil
+
+    "be the singleton nil for empty list" in {
+      val l = Nil
+      sublists(l) must be_==(List(norequest))
+    }
+
+    "be a 2-element list for a singleton list" in {
+      val l = List(Request(1,2,3))
+      val subs = sublists(l)
+      subs.length must be(2)
+      subs must contain(List(Request(1,2,3)))
+      subs must contain(norequest)
+    }
+
+    "be a 4-element list for a 2-element list" in {
+      val l = List(Request(1,2,3),Request(2,3,4))
+      val subs = sublists(l)
+      subs.length must be(4)
+      subs must contain(List(Request(1,2,3),Request(2,3,4)))
+    }
+
+    "be a 16-element list for a 4-element list" in {
+      val l = List(Request(1,2,3),Request(2,3,4),Request(3,3,4),Request(4,5,4))
+      val subs = sublists(l)
+      subs.length must be(16)
+      subs must contain(List(Request(1,2,3),Request(4,5,4)))
+    }
+  }
+
+  "checking compatible lists" should {
+    
+    "an empty list is acceptable" in {
+      val list = Nil
+      isAcceptable(list) must be(true)
+    }
+
+    "a list with 2 incompatible elements is not acceptable" in {
+      val list = List(Request(1,3,3),Request(2,4,3))
+      isAcceptable(list) must be(false)
+    }
+
+    "a list with 1 element is compatible" in {
+      val list = List(Request(1,3,3))
+      isAcceptable(list) must be(true)
+    }
+
+    "a list with 2 incompatible elements not at first place is not acceptable" in {
+      val list = List(Request(1,3,3),Request(3,5,3),Request(4,5,3))
+      isAcceptable(list) must be(false)
+    }
+    
+  }
+
+  "a maximal turnover from a list" should {
+      
+    "be 0 for an empty list" in {
+      val list = Nil
+      bestTurnover(list) must be(0)
+    }
+
+    "be its turnover for a singleton list" in {
+      val req = Request(1,3,3)
+      val list = List(req)
+      bestTurnover(list) must be(req.price)
+    }
+
+    "be the sum of price for an acceptable list with more than 1 element" in {
+      val list = List(Request(1,3,3),Request(3,5,6))
+      bestTurnover(list) must be(9)
+    }
+
+    
+  }
+}
+
+/**
+ * Tests pour le projet LAGS.
+ * @author abailly@oqube.com
+ * @version $Rev$
+ */
+class LagsTest extends JUnit3(LagsSpecification) 
+
+</div>
+<div id="src_test_scala_oqube_lags_LagsTest_scala_121" class="src">
+<h1>File src/test/scala/oqube/lags/LagsTest.scala (r121) </h1><span class="button" onclick="javascript:hideShow('src_test_scala_oqube_lags_LagsTest_scala_124','src_test_scala_oqube_lags_LagsTest_scala_121');">next</span> 
+/**
+ *  Copyright (C) 2008 - OQube / Arnaud Bailly
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Created on Thu Jan 24 2008
+ */
+package oqube.lags
+
+/*
+ * needed imports for specs
+ */
+import junit.framework._
+import org.specs.runner.JUnit3
+import org.specs._
+import request._
+
+
+/**
+ * Specification of LAGS problem.
+ */
+object LagsSpecification extends Specification {
+  
+  "a reservation request" should {
+
+    "be defined by its start, end hour and price" in {
+      val d = Request(1,4,50)
+      d.start must be(1)
+      d.end must be(4)
+      d.price must be(50)
+    }
+
+    "be comparable by start date to some other request" in {
+      val d = Request(1, 4 ,50)
+      val d2 = Request(3, 4 ,50)
+      d2 must beStrictlyGreaterThan(d)
+    }
+
+    "be compatible with other request if times do not overlap" in {
+      val d = Request(1, 4 ,50)
+      val d3 = Request(4, 5 ,50)
+      d &gt;&gt;&gt; d3 must be(true)
+    }
+
+    "be incompatible with some other request if times do overlap" in {
+      val d = Request(1, 4 ,50)
+      val d2 = Request(3, 4 ,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+
+    "be incompatible with some other request if it includes it" in {
+      val d = Request(1, 4 ,50)
+      val d2 = Request(3, 2 ,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+
+    "be incompatible with some other request if it is included in it" in {
+      val d = Request(3, 4 ,50)
+      val d2 = Request(1, 12,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+
+    "be incompatible with some other request if it is overlapped" in {
+      val d = Request(3, 5 ,50)
+      val d2 = Request(1, 4,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+  }
+
+  "the sublists of a list" should {
+    
+    val norequest : List[Request] = Nil
+
+    "be the singleton nil for empty list" in {
+      val l = Nil
+      sublists(l) must be_==(List(norequest))
+    }
+
+    "be a 2-element list for a singleton list" in {
+      val l = List(Request(1,2,3))
+      val subs = sublists(l)
+      subs.length must be(2)
+      subs must contain(List(Request(1,2,3)))
+      subs must contain(norequest)
+    }
+
+    "be a 4-element list for a 2-element list" in {
+      val l = List(Request(1,2,3),Request(2,3,4))
+      val subs = sublists(l)
+      subs.length must be(4)
+      subs must contain(List(Request(1,2,3),Request(2,3,4)))
+    }
+
+    "be a 16-element list for a 4-element list" in {
+      val l = List(Request(1,2,3),Request(2,3,4),Request(3,3,4),Request(4,5,4))
+      val subs = sublists(l)
+      subs.length must be(16)
+      subs must contain(List(Request(1,2,3),Request(4,5,4)))
+    }
+  }
+
+  "checking compatible lists" should {
+    
+    "an empty list is acceptable" in {
+      val list = Nil
+      isAcceptable(list) must be(true)
+    }
+
+    "a list with 2 incompatible elements is not acceptable" in {
+      val list = List(Request(1,3,3),Request(2,4,3))
+      isAcceptable(list) must be(false)
+    }
+
+    "a list with 1 element is compatible" in {
+      val list = List(Request(1,3,3))
+      isAcceptable(list) must be(true)
+    }
+
+    "a list with 2 incompatible elements not at first place is not acceptable" in {
+      val list = List(Request(1,3,3),Request(3,5,3),Request(4,5,3))
+      isAcceptable(list) must be(false)
+    }
+
+    
+  }
+}
+
+/**
+ * Tests pour le projet LAGS.
+ * @author abailly@oqube.com
+ * @version $Rev$
+ */
+class LagsTest extends JUnit3(LagsSpecification) 
+
+</div>
+<div id="src_test_scala_oqube_lags_LagsTest_scala_119" class="src">
+<h1>File src/test/scala/oqube/lags/LagsTest.scala (r119) </h1><span class="button" onclick="javascript:hideShow('src_test_scala_oqube_lags_LagsTest_scala_121','src_test_scala_oqube_lags_LagsTest_scala_119');">next</span> 
+/**
+ *  Copyright (C) 2008 - OQube / Arnaud Bailly
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Created on Thu Jan 24 2008
+ */
+package oqube.lags
+
+/*
+ * needed imports for specs
+ */
+import junit.framework._
+import org.specs.runner.JUnit3
+import org.specs._
+import request._
+
+
+/**
+ * Specification of LAGS problem.
+ */
+object LagsSpecification extends Specification {
+  
+  "a reservation request" should {
+
+    "be defined by its start, end hour and price" in {
+      val d = Request(1,4,50)
+      d.start must be(1)
+      d.end must be(4)
+      d.price must be(50)
+    }
+
+    "be comparable by start date to some other request" in {
+      val d = Request(1, 4 ,50)
+      val d2 = Request(3, 4 ,50)
+      d2 must beStrictlyGreaterThan(d)
+    }
+
+    "be compatible with other request if times do not overlap" in {
+      val d = Request(1, 4 ,50)
+      val d3 = Request(4, 5 ,50)
+      d &gt;&gt;&gt; d3 must be(true)
+    }
+
+    "be incompatible with some other request if times do overlap" in {
+      val d = Request(1, 4 ,50)
+      val d2 = Request(3, 4 ,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+
+    "be incompatible with some other request if it includes it" in {
+      val d = Request(1, 4 ,50)
+      val d2 = Request(3, 2 ,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+
+    "be incompatible with some other request if it is included in it" in {
+      val d = Request(3, 4 ,50)
+      val d2 = Request(1, 12,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+
+    "be incompatible with some other request if it is overlapped" in {
+      val d = Request(3, 5 ,50)
+      val d2 = Request(1, 4,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+  }
+
+  "the sublists of a list" should {
+    
+    val norequest : List[Request] = Nil
+
+    "be the singleton nil for empty list" in {
+      val l = Nil
+      sublists(l) must be_==(List(norequest))
+    }
+
+    "be a 2-element list for a singleton list" in {
+      val l = List(Request(1,2,3))
+      val subs = sublists(l)
+      subs.length must be(2)
+      subs must contain(List(Request(1,2,3)))
+      subs must contain(norequest)
+    }
+
+    "be a 4-element list for a 2-element list" in {
+      val l = List(Request(1,2,3),Request(2,3,4))
+      val subs = sublists(l)
+      subs.length must be(4)
+      subs must contain(List(Request(1,2,3),Request(2,3,4)))
+    }
+
+    "be a 16-element list for a 4-element list" in {
+      val l = List(Request(1,2,3),Request(2,3,4),Request(3,3,4),Request(4,5,4))
+      val subs = sublists(l)
+      subs.length must be(16)
+      subs must contain(List(Request(1,2,3),Request(4,5,4)))
+    }
+  }
+
+  "checking compatible lists" should {
+    
+    "an empty list is acceptable" in {
+      val list = Nil
+      isAcceptable(list) must be(true)
+    }
+
+    "a list with 2 incompatible elements is not acceptable" in {
+      val list = List(Request(1,3,3),Request(2,4,3))
+      isAcceptable(list) must be(false)
+    }
+
+    "a list with 1 element is compatible" in {
+      val list = List(Request(1,3,3))
+      isAcceptable(list) must be(true)
+    }
+  }
+}
+
+/**
+ * Tests pour le projet LAGS.
+ * @author abailly@oqube.com
+ * @version $Rev$
+ */
+class LagsTest extends JUnit3(LagsSpecification) 
+
+</div>
+<div id="src_test_scala_oqube_lags_LagsTest_scala_118" class="src">
+<h1>File src/test/scala/oqube/lags/LagsTest.scala (r118) </h1><span class="button" onclick="javascript:hideShow('src_test_scala_oqube_lags_LagsTest_scala_119','src_test_scala_oqube_lags_LagsTest_scala_118');">next</span> 
+/**
+ *  Copyright (C) 2008 - OQube / Arnaud Bailly
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Created on Thu Jan 24 2008
+ */
+package oqube.lags
+
+/*
+ * needed imports for specs
+ */
+import junit.framework._
+import org.specs.runner.JUnit3
+import org.specs._
+import request._
+
+
+/**
+ * Specification of LAGS problem.
+ */
+object LagsSpecification extends Specification {
+  
+  "a reservation request" should {
+
+    "be defined by its start, end hour and price" in {
+      val d = Request(1,4,50)
+      d.start must be(1)
+      d.end must be(4)
+      d.price must be(50)
+    }
+
+    "be comparable by start date to some other request" in {
+      val d = Request(1, 4 ,50)
+      val d2 = Request(3, 4 ,50)
+      d2 must beStrictlyGreaterThan(d)
+    }
+
+    "be compatible with other request if times do not overlap" in {
+      val d = Request(1, 4 ,50)
+      val d3 = Request(4, 5 ,50)
+      d &gt;&gt;&gt; d3 must be(true)
+    }
+
+    "be incompatible with some other request if times do overlap" in {
+      val d = Request(1, 4 ,50)
+      val d2 = Request(3, 4 ,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+
+    "be incompatible with some other request if it includes it" in {
+      val d = Request(1, 4 ,50)
+      val d2 = Request(3, 2 ,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+
+    "be incompatible with some other request if it is included in it" in {
+      val d = Request(3, 4 ,50)
+      val d2 = Request(1, 12,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+
+    "be incompatible with some other request if it is overlapped" in {
+      val d = Request(3, 5 ,50)
+      val d2 = Request(1, 4,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+  }
+
+  "the sublists of a list" should {
+    
+    val norequest : List[Request] = Nil
+
+    "be the singleton nil for empty list" in {
+      val l = Nil
+      sublists(l) must be_==(List(norequest))
+    }
+
+    "be a 2-element list for a singleton list" in {
+      val l = List(Request(1,2,3))
+      val subs = sublists(l)
+      subs.length must be(2)
+      subs must contain(List(Request(1,2,3)))
+      subs must contain(norequest)
+    }
+
+    "be a 4-element list for a 2-element list" in {
+      val l = List(Request(1,2,3),Request(2,3,4))
+      val subs = sublists(l)
+      subs.length must be(4)
+      subs must contain(List(Request(1,2,3),Request(2,3,4)))
+    }
+
+    "be a 16-element list for a 4-element list" in {
+      val l = List(Request(1,2,3),Request(2,3,4),Request(3,3,4),Request(4,5,4))
+      val subs = sublists(l)
+      subs.length must be(16)
+      subs must contain(List(Request(1,2,3),Request(4,5,4)))
+    }
+  }
+
+  "checking compatible lists" should {
+    
+    "an empty list is acceptable" in {
+      val list = Nil
+      isAcceptable(list) must be(true)
+    }
+
+    "a list with 2 incompatible elements is not acceptable" in {
+      val list = List(Request(1,3,3),Request(2,4,3))
+      isAcceptable(list) must be(false)
+    }
+  }
+}
+
+/**
+ * Tests pour le projet LAGS.
+ * @author abailly@oqube.com
+ * @version $Rev$
+ */
+class LagsTest extends JUnit3(LagsSpecification) 
+
+</div>
+<div id="src_test_scala_oqube_lags_LagsTest_scala_116" class="src">
+<h1>File src/test/scala/oqube/lags/LagsTest.scala (r116) </h1><span class="button" onclick="javascript:hideShow('src_test_scala_oqube_lags_LagsTest_scala_118','src_test_scala_oqube_lags_LagsTest_scala_116');">next</span> 
+/**
+ *  Copyright (C) 2008 - OQube / Arnaud Bailly
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Created on Thu Jan 24 2008
+ */
+package oqube.lags
+
+/*
+ * needed imports for specs
+ */
+import junit.framework._
+import org.specs.runner.JUnit3
+import org.specs._
+import request._
+
+
+/**
+ * Specification of LAGS problem.
+ */
+object LagsSpecification extends Specification {
+  
+  "a reservation request" should {
+
+    "be defined by its start, end hour and price" in {
+      val d = Request(1,4,50)
+      d.start must be(1)
+      d.end must be(4)
+      d.price must be(50)
+    }
+
+    "be comparable by start date to some other request" in {
+      val d = Request(1, 4 ,50)
+      val d2 = Request(3, 4 ,50)
+      d2 must beStrictlyGreaterThan(d)
+    }
+
+    "be compatible with other request if times do not overlap" in {
+      val d = Request(1, 4 ,50)
+      val d3 = Request(4, 5 ,50)
+      d &gt;&gt;&gt; d3 must be(true)
+    }
+
+    "be incompatible with some other request if times do overlap" in {
+      val d = Request(1, 4 ,50)
+      val d2 = Request(3, 4 ,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+
+    "be incompatible with some other request if it includes it" in {
+      val d = Request(1, 4 ,50)
+      val d2 = Request(3, 2 ,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+
+    "be incompatible with some other request if it is included in it" in {
+      val d = Request(3, 4 ,50)
+      val d2 = Request(1, 12,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+
+    "be incompatible with some other request if it is overlapped" in {
+      val d = Request(3, 5 ,50)
+      val d2 = Request(1, 4,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+  }
+
+  "the sublists of a list" should {
+    
+    val norequest : List[Request] = Nil
+
+    "be the singleton nil for empty list" in {
+      val l = Nil
+      sublists(l) must be_==(List(norequest))
+    }
+
+    "be a 2-element list for a singleton list" in {
+      val l = List(Request(1,2,3))
+      val subs = sublists(l)
+      subs.length must be(2)
+      subs must contain(List(Request(1,2,3)))
+      subs must contain(norequest)
+    }
+
+    "be a 4-element list for a 2-element list" in {
+      val l = List(Request(1,2,3),Request(2,3,4))
+      val subs = sublists(l)
+      subs.length must be(4)
+      subs must contain(List(Request(1,2,3),Request(2,3,4)))
+    }
+
+    "be a 16-element list for a 4-element list" in {
+      val l = List(Request(1,2,3),Request(2,3,4),Request(3,3,4),Request(4,5,4))
+      val subs = sublists(l)
+      subs.length must be(16)
+      subs must contain(List(Request(1,2,3),Request(4,5,4)))
+    }
+  }
+
+  "checking compatible lists" should {
+    
+    "an empty list is acceptable" in {
+      val list = Nil
+      isAcceptable(list) must be(true)
+    }
+
+  }
+}
+
+/**
+ * Tests pour le projet LAGS.
+ * @author abailly@oqube.com
+ * @version $Rev$
+ */
+class LagsTest extends JUnit3(LagsSpecification) 
+
+</div>
+<div id="src_test_scala_oqube_lags_LagsTest_scala_113" class="src">
+<h1>File src/test/scala/oqube/lags/LagsTest.scala (r113) </h1><span class="button" onclick="javascript:hideShow('src_test_scala_oqube_lags_LagsTest_scala_116','src_test_scala_oqube_lags_LagsTest_scala_113');">next</span> 
+/**
+ *  Copyright (C) 2008 - OQube / Arnaud Bailly
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Created on Thu Jan 24 2008
+ */
+package oqube.lags
+
+/*
+ * needed imports for specs
+ */
+import junit.framework._
+import org.specs.runner.JUnit3
+import org.specs._
+import request._
+
+
+/**
+ * Specification of LAGS problem.
+ */
+object LagsSpecification extends Specification {
+  
+  "a reservation request" should {
+
+    "be defined by its start, end hour and price" in {
+      val d = Request(1,4,50)
+      d.start must be(1)
+      d.end must be(4)
+      d.price must be(50)
+    }
+
+    "be comparable by start date to some other request" in {
+      val d = Request(1, 4 ,50)
+      val d2 = Request(3, 4 ,50)
+      d2 must beStrictlyGreaterThan(d)
+    }
+
+    "be compatible with other request if times do not overlap" in {
+      val d = Request(1, 4 ,50)
+      val d3 = Request(4, 5 ,50)
+      d &gt;&gt;&gt; d3 must be(true)
+    }
+
+    "be incompatible with some other request if times do overlap" in {
+      val d = Request(1, 4 ,50)
+      val d2 = Request(3, 4 ,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+
+    "be incompatible with some other request if it includes it" in {
+      val d = Request(1, 4 ,50)
+      val d2 = Request(3, 2 ,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+
+    "be incompatible with some other request if it is included in it" in {
+      val d = Request(3, 4 ,50)
+      val d2 = Request(1, 12,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+
+    "be incompatible with some other request if it is overlapped" in {
+      val d = Request(3, 5 ,50)
+      val d2 = Request(1, 4,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+  }
+
+  "the sublists of a list" should {
+    
+    val norequest : List[Request] = Nil
+
+    "be the singleton nil for empty list" in {
+      val l = Nil
+      sublists(l) must be_==(List(norequest))
+    }
+
+    "be a 2-element list for a singleton list" in {
+      val l = List(Request(1,2,3))
+      val subs = sublists(l)
+      subs.length must be(2)
+      subs must contain(List(Request(1,2,3)))
+      subs must contain(norequest)
+    }
+
+    "be a 4-element list for a 2-element list" in {
+      val l = List(Request(1,2,3),Request(2,3,4))
+      val subs = sublists(l)
+      subs.length must be(4)
+      subs must contain(List(Request(1,2,3),Request(2,3,4)))
+    }
+
+    "be a 16-element list for a 4-element list" in {
+      val l = List(Request(1,2,3),Request(2,3,4),Request(3,3,4),Request(4,5,4))
+      val subs = sublists(l)
+      subs.length must be(16)
+      subs must contain(List(Request(1,2,3),Request(4,5,4)))
+    }
+  }
+}
+
+/**
+ * Tests pour le projet LAGS.
+ * @author abailly@oqube.com
+ * @version $Rev$
+ */
+class LagsTest extends JUnit3(LagsSpecification) 
+
+</div>
+<div id="src_test_scala_oqube_lags_LagsTest_scala_110" class="src">
+<h1>File src/test/scala/oqube/lags/LagsTest.scala (r110) </h1><span class="button" onclick="javascript:hideShow('src_test_scala_oqube_lags_LagsTest_scala_113','src_test_scala_oqube_lags_LagsTest_scala_110');">next</span> 
+/**
+ *  Copyright (C) 2008 - OQube / Arnaud Bailly
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Created on Thu Jan 24 2008
+ */
+package oqube.lags
+
+/*
+ * needed imports for specs
+ */
+import junit.framework._
+import org.specs.runner.JUnit3
+import org.specs._
+import request._
+
+
+/**
+ * Specification of LAGS problem.
+ */
+object LagsSpecification extends Specification {
+  
+  "a reservation request" should {
+
+    "be defined by its start, end hour and price" in {
+      val d = Request(1,4,50)
+      d.start must be(1)
+      d.end must be(4)
+      d.price must be(50)
+    }
+
+    "be comparable by start date to some other request" in {
+      val d = Request(1, 4 ,50)
+      val d2 = Request(3, 4 ,50)
+      d2 must beStrictlyGreaterThan(d)
+    }
+
+    "be compatible with other request if times do not overlap" in {
+      val d = Request(1, 4 ,50)
+      val d3 = Request(4, 5 ,50)
+      d &gt;&gt;&gt; d3 must be(true)
+    }
+
+    "be incompatible with some other request if times do overlap" in {
+      val d = Request(1, 4 ,50)
+      val d2 = Request(3, 4 ,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+
+    "be incompatible with some other request if it includes it" in {
+      val d = Request(1, 4 ,50)
+      val d2 = Request(3, 2 ,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+
+    "be incompatible with some other request if it is included in it" in {
+      val d = Request(3, 4 ,50)
+      val d2 = Request(1, 12,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+
+    "be incompatible with some other request if it is overlapped" in {
+      val d = Request(3, 5 ,50)
+      val d2 = Request(1, 4,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+  }
+
+  "the sublists of a list" should {
+    
+    val norequest : List[Request] = Nil
+
+    "be the singleton nil for empty list" in {
+      val l = Nil
+      sublists(l) must be_==(List(norequest))
+    }
+
+    "be a 2-element list for a singleton list" in {
+      val l = List(Request(1,2,3))
+      val subs = sublists(l)
+      subs.length must be(2)
+      subs must contain(List(Request(1,2,3)))
+      subs must contain(norequest)
+    }
+
+    "be a 4-element list for a 2-element list" in {
+      val l = List(Request(1,2,3),Request(2,3,4))
+      val subs = sublists(l)
+      subs.length must be(4)
+      subs must contain(List(Request(1,2,3),Request(2,3,4)))
+    }
+  }
+}
+
+/**
+ * Tests pour le projet LAGS.
+ * @author abailly@oqube.com
+ * @version $Rev$
+ */
+class LagsTest extends JUnit3(LagsSpecification) 
+
+</div>
+<div id="src_test_scala_oqube_lags_LagsTest_scala_108" class="src">
+<h1>File src/test/scala/oqube/lags/LagsTest.scala (r108) </h1><span class="button" onclick="javascript:hideShow('src_test_scala_oqube_lags_LagsTest_scala_110','src_test_scala_oqube_lags_LagsTest_scala_108');">next</span> 
+/**
+ *  Copyright (C) 2008 - OQube / Arnaud Bailly
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Created on Thu Jan 24 2008
+ */
+package oqube.lags
+
+/*
+ * needed imports for specs
+ */
+import junit.framework._
+import org.specs.runner.JUnit3
+import org.specs._
+import request._
+
+
+/**
+ * Specification of LAGS problem.
+ */
+object LagsSpecification extends Specification {
+  
+  "a reservation request" should {
+
+    "be defined by its start, end hour and price" in {
+      val d = Request(1,4,50)
+      d.start must be(1)
+      d.end must be(4)
+      d.price must be(50)
+    }
+
+    "be comparable by start date to some other request" in {
+      val d = Request(1, 4 ,50)
+      val d2 = Request(3, 4 ,50)
+      d2 must beStrictlyGreaterThan(d)
+    }
+
+    "be compatible with other request if times do not overlap" in {
+      val d = Request(1, 4 ,50)
+      val d3 = Request(4, 5 ,50)
+      d &gt;&gt;&gt; d3 must be(true)
+    }
+
+    "be incompatible with some other request if times do overlap" in {
+      val d = Request(1, 4 ,50)
+      val d2 = Request(3, 4 ,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+
+    "be incompatible with some other request if it includes it" in {
+      val d = Request(1, 4 ,50)
+      val d2 = Request(3, 2 ,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+
+    "be incompatible with some other request if it is included in it" in {
+      val d = Request(3, 4 ,50)
+      val d2 = Request(1, 12,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+
+    "be incompatible with some other request if it is overlapped" in {
+      val d = Request(3, 5 ,50)
+      val d2 = Request(1, 4,50)
+      d &gt;&gt;&gt; d2 must be(false)
+    }
+
+    "be compatible if it starts after ends of other request" in {
+      val d = Request(4, 8 ,50)
+      val d2 = Request(1, 4,50)
+      d &gt;&gt;&gt; d2 must be(true)
+    }
+  }
+
+  "the sublists of a list" should {
+    
+    "be the singleton nil for empty list" in {
+      val l = Nil
+      sublists(l) must be_==(List(Nil))
+    }
+  }
+}
+
+/**
+ * Tests pour le projet LAGS.
+ * @author abailly@oqube.com
+ * @version $Rev$
+ */
+class LagsTest extends JUnit3(LagsSpecification) 
+
+</div>
+</div>
+</body>

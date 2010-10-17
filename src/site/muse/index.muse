@@ -1,0 +1,112 @@
+#title Topo du Dojo XP de Paris
+#author Arnaud Bailly
+
+Ceci est un *topo* du [[http://xp-france.net/cgi-bin/wiki.pl?DojoDeveloppement][dojo XP]] de Paris, ou plus précisèment de quelques
+séances du Dojo auxquelles j'ai participé. Le lien vers chaque *secteur*
+se trouve dans la barre de menu à droite.
+
+* Qu'est ce qu'un topo ?
+
+Un **topo** est, dans le jargon des grimpeurs, un guide présentant les
+voies disponibles pour un site de falaises. Ce topo, souvent réalisé
+par des amateurs avec des moyens d'impression rudimentaires (on en
+trouve aussi sur le web, comme par exemple pour les célèbres
+[[http://www.bonnegrimpe.com/topo.html][Calanques]]), décrit les voies disponibles sur le site, selon un format
+qui peut être plus ou moins détaillé. 
+
+[[agile.png][Agile (courtesy of Christophe Thibaut)]]
+
+Les informations disponibles pour chaque voie comprennent tout ou
+partie de:
+ - un nom, plus ou moins ésotérique/rigolo/prétentieux;
+ - une [[http://fr.wikipedia.org/wiki/Cotation_(escalade)][cotation]], en France un chiffre entre 4 et 9, plus une lettre a,
+   b ou c, plus éventuellement un - ou un +;
+ - un [[http://www.topo-calanques.com/dessins_voies.htm][tracé]], avec [[http://cafma.free.fr/alliat/fr_alliat.htm][dessin]] ou photo de la voie, reprenant les cotations
+   de chaque portion, les positions des points d'assurage en sommet de
+   voie ou en cours de voie;
+ - un commentaire identifiant les difficultés particulières, le
+   parcours d'accès, le détail de l'équipement de la voie....
+
+La cotation de la voie résume l'ensemble de ces facteurs en un chiffre
+unique et est donc logiquement l'élément le plus utilisé. Cette
+cotation est une échelle théoriquement ouverte: rien n'interdit qu'un
+jour des voies soient cotées 10 ou 11, même si aujourd'hui les 9a sont
+rarissimes et réservées à l'élite mondiale de la grimpe. 
+
+* Quel rapport avec XP ?
+
+Il existe une forte similitude, si ce n'est dans l'objet, du moins
+dans la forme, entre la pratique de l'*escalade* et les séances de dojo
+XP, entre la grimpe et la programmation (quand cette dernière est
+conçue comme autre chose qu'un travail rémunéré 9h-18h):
+ - la voie est plus importante que le but:
+      *Ce n'est pas le chemin qui est difficile, c'est le difficile qui
+      est le chemin*;
+ - une voie ne se tente jamais seule, il faut toujours un binôme pour
+   assurer le grimpeur de tête;
+ - il est plus facile de **grimper en moulinette** (assuré depuis le
+   sommet  de la voie) qu'**en tête** (assuré depuis le bas: le grimpeur
+   de tête doit, en plus de l'effort nécessaire à la grimpe, poser des
+   *dégaines* aux points d'assurages et y passer la corde afin de
+   limiter les risques de chutes dangereuse);
+ - pour un même but à atteindre, il peut exister plusieurs voies, de
+   difficultés distinctes;
+ - dans une même voie, il y a souvent un ou deux **pas** difficiles parmi
+   un ensemble de pas faciles. Et ce n'est pas parce que l'on sait
+   qu'il y a un pas difficile que l'on va être capable de le passer;
+ - certaines voies peuvent être plus ou moins bien équipées, dans
+   certain cas on parlera de *terrain d'aventure* lorsque le grimpeur
+   n'a pas de points d'assurage et doit poser des bloqueurs et
+   coinceurs pour s'assurer (les anglais ne pratiquent l'escalade
+   quasiment que sous cette forme).
+
+La liste des parallèles peut être étendue facilement. Et la
+comparaison avec l'escalade n'est pas la seule analogie que l'on peut
+trouver sur la programmation, une autre analogie que j'ai quelquefois
+rencontrée est celle de la *musique*, et en particulier du *jazz*. Un
+travail de réflexion sur des problèmes de programmation particulier
+pourrait mériter le qualificatif d'*étude*. 
+
+Une analogie n'est intéressante que lorsqu'elle nous permet de mieux
+comprendre la chose comparée à la lumière de l'analogue, celui-ci
+étant mieux compris/connu. Dans le cas présent, la comparaison permet
+de révéler ce qui rend la pratique du dojo, et plus généralement la
+pratique d'XP, intéressante. Au coeur et de l'escalade, et d'XP, se
+trouvent la notion d'*engagement*, la recherche d'une *ascèse*, le
+fantasme - assumé - du *geste parfait*, une pratique à la fois *solitaire*
+- on est tout seul face à soi-même quand on grimpe - et *collective* -
+on grimpe sur les mêmes falaises, on s'assure réciproquement, on
+partage les bons coins, les cotations, l'équipement des voies...
+
+Un point particulièrement intéressant révèle un aspect de la nature du *Test
+Driven Development*, c'est l'idée que les tests représentent les points
+d'ancrages d'une voie, l'assurage du grimpeur. Plus mes points sont
+raccrochées, plus ma progression sera sûre: je prendrais moins de
+risque en cas de *chûte* de faire un vol et d'avoir un accident; et
+surtout je repartirais de moins loin. 
+
+* Pourquoi un topo ?
+
+Je ne suis pas musicien, et ne pratique plus l'escalade, mais il m'a
+semblé, avec d'autres, lors d'un dojo, qu'il pourrait être intéressant
+de regrouper les problèmes étudiés sous la forme de *topos* (rien à voir
+avec le concept de *topoi*... quoique...). J'ai par ailleurs toujours eu
+une grande méfiance envers le vocabulaire emprunté aux *arts martiaux*
+japonais qui imprègne le dojo, peut-être parce que j'ai fort peu
+pratique ce genre de sport. 
+
+L'objectif serait, au delà de la description des problèmes, de mettre
+l'accent sur la *voie* permettant de résoudre le problème et au travers
+de la *cotation* de permettre une progression, autonome et ouverte,
+sans fin précise, dans cette discipline étrange et difficile qu'est la
+programmation. 
+
+On va donc essayer pour chaque *voie* réalisée en dojo de fournir un
+*guide* permettant à ceux qui le souhaitent de découvrir ces voies, de
+les refaire, d'étudier leurs difficultés. Chaque topo d'une voie
+devrait donc contenir:
+ - le nom de la voie, si possible de nature à éclairer l'esprit dans
+   lequel elle doit être entreprise;
+ - un *plan* sous la forme d'une séquence de code présentant les
+   principales étapes;
+ - un commentaire sur les difficultés de la voie.

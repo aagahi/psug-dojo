@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Dojo Ways">
+ <bannerLeft>
+  <name>OQube</name>
+  <src>/logooqube.png</src>
+  <href>http://www.oqube.com/</href>
+ </bannerLeft>
+ 
+ <bannerRight>
+  <name>sahara</name>
+  <src>/sahara-right.png</src>
+ </bannerRight>
+ 
+  <body>
+  <menu name="Secteurs" ref="modules">
+   <item name="Secteur Lags" ref="lags/index.html" />
+   <item name="Secteur Pipes" ref="pipes/index.html" />
+  </menu>
+
+ </body>
+
+</project>
