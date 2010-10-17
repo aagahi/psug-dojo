@@ -21,7 +21,6 @@ package oqube.pipes
 /*
  * needed imports for specs
  */
-import junit.framework._
 import org.specs.runner.JUnit3
 import org.specs._
 

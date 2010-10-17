@@ -99,7 +99,7 @@ object request {
 	}
     }
 
-    override def equals(that : Any) : boolean = this.reqs == that.asInstanceOf[Schedule].reqs
+    override def equals(that : Any) : Boolean = this.reqs == that.asInstanceOf[Schedule].reqs
 
     override def toString(): String = reqs.toString
   }      

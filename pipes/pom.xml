@@ -1,42 +1,31 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
- <parent>
-  <groupId>oqube.dojo</groupId>
-  <artifactId>dojo</artifactId>
-  <version>1.0-SNAPSHOT</version>
- </parent>
-  <groupId>oqube.pipes</groupId>
-  <artifactId>pipes</artifactId>
-  <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
-  <name>Pipes</name>
- 
-  <build>
-  <plugins>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>oqube.dojo</groupId>
+        <artifactId>dojo</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <groupId>oqube.pipes</groupId>
+    <artifactId>pipes</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>Pipes</name>
 
-   <plugin>
-    <groupId>scala</groupId>
-    <artifactId>maven-scala-plugin</artifactId>
-    <executions>
-     <execution>
-      <goals>
-       <goal>compile</goal>
-       <goal>testCompile</goal>
-      </goals>
-     </execution>
-    </executions>
-   </plugin>
-  </plugins>
- </build>
+    <build>
+        <plugins>
 
- <reporting>
-  <plugins>
 
-   <!-- i18n of project's site decoration -->
-   <plugin>
-    <artifactId>maven-surefire-report-plugin</artifactId>
-   </plugin>
-  </plugins>
- </reporting>
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
+
+            <!-- i18n of project's site decoration -->
+            <plugin>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>

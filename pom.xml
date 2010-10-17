@@ -1,159 +1,212 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>oqube.dojo</groupId>
-  <artifactId>dojo</artifactId>
-  <packaging>pom</packaging>
-  <version>1.0-SNAPSHOT</version>
-  <name>Dojo pom</name>
-  <url>http://www.oqube.com/projects/dojo/</url>
- 
- <inceptionYear>2008</inceptionYear>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>oqube.dojo</groupId>
+    <artifactId>dojo</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>Dojo pom</name>
+    <url>http://www.oqube.com/projects/dojo/</url>
 
- <licenses>
-  <license>
-   <name>GNU LGPL 2.1</name>
-   <url>file://./LICENCE</url>
-   <distribution>repo</distribution>
-  </license>
- </licenses> 
+    <inceptionYear>2008</inceptionYear>
 
- <repositories>
-  <repository>
-   <id>scala-tools.org</id>
-   <name>Scala-tools Maven2 Repository</name>
-   <url>http://scala-tools.org/repo-releases</url>
-  </repository>
-  <repository>
-   <id>oqube.com</id>
-   <name>OQube repository</name>
-   <url>http://www.oqube.com/maven2</url>
-   <layout>default</layout>
-   <snapshots>
-    <enabled>true</enabled>
-   </snapshots>
-   <releases>
-    <enabled>true</enabled>
-   </releases>
-  </repository>
- </repositories>
- 
- <pluginRepositories>
-  <pluginRepository>
-   <id>scala-tools.org</id>
-   <name>Scala-tools Maven2 Repository</name>
-   <url>http://scala-tools.org/repo-releases</url>
-  </pluginRepository>
-  
-  <pluginRepository>
-   <id>oqube.com</id>
-   <name>OQube plugin Repository</name>
-   <url>http://www.oqube.com/maven2</url>
-   <layout>default</layout>
-   <snapshots>
-    <enabled>true</enabled>
-   </snapshots>
-   <releases>
-    <enabled>true</enabled>
-   </releases>
-  </pluginRepository>
- </pluginRepositories>
- 
- <distributionManagement>
-  
-  <site>
-   <id>oqube.com</id>
-   <url>
-    scp://www.oqube.com/var/www/projects/dojo
-   </url>
-  </site>
+    <licenses>
+        <license>
+            <name>GNU LGPL 2.1</name>
+            <url>file://./LICENCE</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
-  <repository>
-   <id>oqube.com</id>
-   <name>OQube public repository</name>
-   <url>
-    scp://www.oqube.com/var/www/maven2
-   </url>
-  </repository>
-  
- </distributionManagement>
+    <repositories>
+        <repository>
+            <id>scala-tools.org</id>
+            <name>Scala-tools Maven2 Repository</name>
+            <url>http://scala-tools.org/repo-releases</url>
+        </repository>
+        <repository>
+            <id>oqube.com</id>
+            <name>OQube repository</name>
+            <url>http://www.oqube.com/maven2</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
 
- <developers>
- 
-  <developer>
-   <name>Arnaud Bailly </name>
-   <id>bailly</id>
-    <email>bailly AT lifl POINT fr</email>
-    <organization> LIFL/Norsys</organization>
-    <roles>
-     <role>Developper</role>
-    </roles>
-  </developer>
- </developers>
+        <repository>
+            <id>scala-tools.org</id>
+            <name>Scala-tools Maven2 Repository</name>
+            <url>http://scala-tools.org/repo-releases</url>
+        </repository>
 
- <dependencies>
-  <dependency>
-   <groupId>junit</groupId>
-   <artifactId>junit</artifactId>
-   <version>4.4</version>
-   <scope>test</scope>
-  </dependency>
-  <dependency>
-   <groupId>org.specs</groupId>
-   <artifactId>specs</artifactId>
-   <version>1.2.3</version>
-   <scope>test</scope>
-  </dependency>
-  <dependency>
-   <groupId>scala</groupId>
-   <artifactId>scala-compiler</artifactId>
-   <version>2.6.1</version>
-  </dependency>
-  <dependency>
-   <groupId>scala</groupId>
-   <artifactId>scala-library</artifactId>
-   <version>2.6.1</version>
-  </dependency>  
+    </repositories>
 
- </dependencies>
- 
-  <build>
 
-  <plugins>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <scala.version>2.8.0</scala.version>
+    </properties>
 
-   <!-- i18n of project's site decoration -->
-   <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-site-plugin</artifactId>
-    <version>2.0-beta-6</version>
-    <configuration>
-     <outputEncoding>UTF-8</outputEncoding>
-     <inputEncoding>UTF-8</inputEncoding>
-    </configuration>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>scala-tools.org</id>
+            <name>Scala-tools Maven2 Repository</name>
+            <url>http://scala-tools.org/repo-releases</url>
+        </pluginRepository>
+
+        <pluginRepository>
+            <id>oqube.com</id>
+            <name>OQube plugin Repository</name>
+            <url>http://www.oqube.com/maven2</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
+
+
+    <developers>
+        <developer>
+            <name>Arnaud Bailly</name>
+            <id>bailly</id>
+            <email>bailly AT lifl POINT fr</email>
+            <organization>LIFL/Norsys</organization>
+            <roles>
+                <role>Developper</role>
+            </roles>
+        </developer>
+    </developers>
+
+
+    
     <dependencies>
-     <dependency>
-      <groupId>oqube.muse</groupId>
-      <artifactId>muse-doxia-module</artifactId>
-      <version>1.0-SNAPSHOT</version>
-     </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-tools.testing</groupId>
+            <artifactId>specs_2.8.0</artifactId>
+            <version>1.6.5</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.scala-tools.testing</groupId>
+            <artifactId>scalacheck_2.8.0</artifactId>
+            <version>1.7</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>${scala.version}</version>
+        </dependency>
+
     </dependencies>
-   </plugin>
 
-  </plugins>
- </build>
+    <build>
 
- <reporting>
-  <plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.scala-tools</groupId>
+                    <artifactId>maven-scala-plugin</artifactId>
+                    <version>2.13.1</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
 
-   <!-- i18n of project's site decoration -->
-   <plugin>
-    <artifactId>maven-surefire-report-plugin</artifactId>
-   </plugin>
-  </plugins>
- </reporting>
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>scala-compile-first</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>scala-test-compile</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
 
- <modules>
-  <module>lags</module>
-  <module>pipes</module>
- </modules>
+
+                <configuration>
+                    <scalaVersion>${scala.version}</scalaVersion>
+                    <args>
+                        <args>-encoding</args>
+                        <args>UTF8</args>
+                    </args>
+                </configuration>
+
+            </plugin>
+
+            <!--
+                   Adds src/main/scala and src/test/scala as source folders, from
+                   http://groups.google.com/group/liftweb/browse_thread/thread/3dac7002f9e59546/3918bba2f7a92cd3?pli=1
+               -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>src/main/scala</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>add-test-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>src/test/scala</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+        </plugins>
+    </build>
+
+    <reporting>
+    </reporting>
+
+    <modules>
+        <module>lags</module>
+        <module>pipes</module>
+    </modules>
 </project>

@@ -1,103 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
- <parent>
-  <groupId>oqube.dojo</groupId>
-  <artifactId>dojo</artifactId>
-  <version>1.0-SNAPSHOT</version>
- </parent>
- <groupId>oqube.lags</groupId>
- <artifactId>lags</artifactId>
-  <packaging>jar</packaging>
-  <name>Louez Votre Avion, Gagnez des Sous</name>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>oqube.dojo</groupId>
+        <artifactId>dojo</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <groupId>oqube.lags</groupId>
+    <artifactId>lags</artifactId>
+    <packaging>jar</packaging>
+    <name>Louez Votre Avion, Gagnez des Sous</name>
 
- <inceptionYear>2008</inceptionYear>
-
- <licenses>
-  <license>
-   <name>GNU LGPL 2.1</name>
-   <url>file://./LICENCE</url>
-   <distribution>repo</distribution>
-  </license>
- </licenses> 
-
- <repositories>
-  <repository>
-   <id>scala-tools.org</id>
-   <name>Scala-tools Maven2 Repository</name>
-   <url>http://scala-tools.org/repo-releases</url>
-  </repository>
-  <repository>
-   <id>oqube.com</id>
-   <name>OQube repository</name>
-   <url>http://www.oqube.com/maven2</url>
-   <layout>default</layout>
-   <snapshots>
-    <enabled>true</enabled>
-   </snapshots>
-   <releases>
-    <enabled>true</enabled>
-   </releases>
-  </repository>
- </repositories>
- 
- <pluginRepositories>
-  <pluginRepository>
-   <id>scala-tools.org</id>
-   <name>Scala-tools Maven2 Repository</name>
-   <url>http://scala-tools.org/repo-releases</url>
-  </pluginRepository>
-  
-  <pluginRepository>
-   <id>oqube.com</id>
-   <name>OQube plugin Repository</name>
-   <url>http://www.oqube.com/maven2</url>
-   <layout>default</layout>
-   <snapshots>
-    <enabled>true</enabled>
-   </snapshots>
-   <releases>
-    <enabled>true</enabled>
-   </releases>
-  </pluginRepository>
- </pluginRepositories>
- 
- 
-  <build>
-  <plugins>
-
-   <!-- i18n of project's site decoration -->
-   <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-site-plugin</artifactId>
-    <configuration>
-     <outputEncoding>ISO-8859-1</outputEncoding>
-     <inputEncoding>UTF-8</inputEncoding>
-    </configuration>
-   </plugin>
-
-   <plugin>
-    <groupId>scala</groupId>
-    <artifactId>maven-scala-plugin</artifactId>
-    <executions>
-     <execution>
-      <goals>
-       <goal>compile</goal>
-       <goal>testCompile</goal>
-      </goals>
-     </execution>
-    </executions>
-   </plugin>
-  </plugins>
- </build>
-
- <reporting>
-  <plugins>
-
-   <!-- i18n of project's site decoration -->
-   <plugin>
-    <artifactId>maven-surefire-report-plugin</artifactId>
-   </plugin>
-  </plugins>
- </reporting>
+   
 </project>

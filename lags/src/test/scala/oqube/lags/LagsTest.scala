@@ -21,21 +21,15 @@ package oqube.lags
 /*
  * needed imports for specs
  */
-import junit.framework._
 import org.specs.runner.JUnit4
 import org.specs._
 import request._
 import naive._
 
 /* use scalacheck for high-level properties */
-import org.scalacheck.Prop.property
+import org.scalacheck.Prop.forAll
 import org.scalacheck.Gen
-import org.scalacheck.Prop
-import Gen._
-import org.scalacheck.Arbitrary
-import org.scalacheck.Arb
-import Arbitrary._
-import org.specs.matcher.ScalacheckParameters._
+import org.scalacheck.Gen._
 
 
 /**
@@ -55,7 +49,7 @@ object LagsSpecification extends Specification {
     "be comparable by start date to some other request" in {
       val d = Request(1, 4 ,50)
       val d2 = Request(3, 4 ,50)
-      d2 must beStrictlyGreaterThan(d)
+      d2 must beGreaterThan(d)
     }
 
     "be compatible with other request if times do not overlap" in {
@@ -267,11 +261,11 @@ object LagsObjectSpecification extends Specification {
 
     "allow computation of maximal turnover" in {
       
-      val prop = Prop.forAll(sortedRequest(requests)) {
-	ds : List[Request] => 
-	  maximalTurnover(ds) == bestTurnover(ds)
-      }
-      prop must pass(display(minTestsOk -> 50, maxDiscarded -> 2000))
+      val prop = forAll( sortedRequest(requests) ) {
+      	ds : List[Request] =>
+  	      maximalTurnover(ds) == bestTurnover(ds)
+        }
+      prop must pass( display(minTestsOk -> 50, maxDiscarded -> 2000) )
     }
     
   }
